@@ -15,6 +15,7 @@
 #include <math.h>
 #include "globals.h"
 
+#include <typeinfo>
 #include <iostream>
 #define width 800
 #define height 800
@@ -28,13 +29,15 @@ int polyMode = 0;
 int toScale = -1;
 
 
+bool analisysMode = false;
+
 void drawCircle(float radius) {
     glBegin(GL_LINE_LOOP);
 
     for (int i = 0; i < 360; i++) {
         float degInRad = i * deg2rad;
         glColor3f(1, 1, 1);
-        glVertex3f(cos(degInRad) * radius, 0, sin(degInRad) * radius);
+        glVertex3f(cosf(degInRad) * radius, 0, sinf(degInRad) * radius);
     }
     glEnd();
 }
@@ -51,14 +54,15 @@ void setMaterialColor(float r, float g, float b) {
 
 void drawEarthMoon() {
     glPushMatrix();
-    glRotatef(earthTranslation * 8, 0, 1, 0);
-    setMaterialColor(1, 1, 1);
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, earthRadius + (earthRadius * 0.27) * 2);
+	    glRotatef(earthTranslation * 8, 0, 1, 0);
+	    setMaterialColor(1, 1, 1);
+	    glPushMatrix();
+		    drawCircle(earthRadius + (earthRadius * 0.27) * 2);
+		    glTranslatef(0.0, 0.0, earthRadius + (earthRadius * 0.27) * 2);
 
-    glRotatef(90.0, 1, 0, 0);
-    glutSolidSphere(earthRadius * 0.27, verticalLines, horizontalLines);
-    glPopMatrix();
+		    glRotatef(90.0, 1, 0, 0);
+		    glutSolidSphere(earthRadius * 0.27, verticalLines, horizontalLines);
+	    glPopMatrix();
     glPopMatrix();
 }
 
@@ -66,27 +70,24 @@ void drawEarth() {
 
     glPushMatrix();
 
+    
     glRotatef(earthTranslation, 0, 1, 0);
-
+    
     glPushMatrix();
-    drawCircle(au);
-    glTranslatef(0.0, 0.0, au);
+	    drawCircle(au);
+	    glTranslatef(0.0, 0.0, au);
 
-    drawEarthMoon();
+	    drawEarthMoon();
 
-    setMaterialColor(0.1, 0.2, 0.8);
+	    if (toScale == 3) { glScalef(2.0, 2.0, 2.0); }
+	    setMaterialColor(0.1, 0.2, 0.8);
 
-    // Axial tilt of 23.44 -> 90-23.44
-    glRotatef(66.56, 1, 0, 0);
+	    // Axial tilt of 23.44 -> 90-23.44
+	    glRotatef(66.56, 1, 0, 0);
 
-    //Translation around self axis
-    glRotatef(zRotated / 50, 0, 0, 1);
-
-    if (toScale == 3) {
-        glScalef(2.0, 2.0, 2.0);
-    }
-
-    glutSolidSphere(earthRadius, verticalLines, horizontalLines);
+	    //Translation around self axis
+	    glRotatef(zRotated / 50, 0, 0, 1);
+	    glutSolidSphere(earthRadius, verticalLines, horizontalLines);
 
     glPopMatrix();
     glPopMatrix();
@@ -95,46 +96,67 @@ void drawEarth() {
 void drawSun() {
     GLUquadricObj * sphere = gluNewQuadric();
     gluQuadricTexture(sphere, GL_TRUE);
-
     setMaterialColor(1, 1, 0);
     glPushMatrix();
-    glRotatef(90.0, 1, 0, 0);
-    glRotatef(zRotated / 360, 0, 0, 1);
-    gluSphere(sphere, sunRadius, verticalLines, horizontalLines);
+	    glRotatef(90.0, 1, 0, 0);
+	    glRotatef(zRotated / 360, 0, 0, 1);
+	    if (toScale == 0) glScalef(2.0, 2.0, 2.0);
+	    gluSphere(sphere, sunRadius, verticalLines, horizontalLines);
     glPopMatrix();
 }
 
 void drawMars() {
     glPushMatrix();
-    glRotatef(earthTranslation * -1.3, 0, 1, 0);
+	    glRotatef(earthTranslation * 1.3, 0, 1, 0);
+	    setMaterialColor(0.8, 0.2, 0.1);
 
-    setMaterialColor(0.8, 0.2, 0.1);
+	    glPushMatrix();
+	    	drawCircle(marsAU);
+		    glTranslatef(0.0, 0.0, marsAU);
 
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, marsAU);
+		    // Axial tilt of 25.19 -> 90-25.19
+		    glRotatef(64.81, 1, 0, 0);
 
-    // Axial tilt of 25.19 -> 90-25.19
-    glRotatef(64.81, 1, 0, 0);
+		    glRotatef(zRotated / 10, 0, 0, 1);
+		    if (toScale == 4) { glScalef(2.0, 2.0, 2.0); }
+		    glutSolidSphere(earthRadius * 0.7, verticalLines, horizontalLines);
 
-    glRotatef(zRotated / 10, 0, 0, 1);
-    glutSolidSphere(earthRadius * 0.7, verticalLines, horizontalLines);
-    glPopMatrix();
+	    glPopMatrix();
     glPopMatrix();
 }
 
 void drawVenus() {
     glPushMatrix();
-    glRotatef(earthTranslation * 0.7, 0, 1, 0);
+	    glRotatef(earthTranslation * 0.7, 0, 1, 0);
 
-    setMaterialColor(0.0, 0.7, 0.1);
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, venusAU);
-    glRotatef(90.0, 1, 0, 0);
-    glRotatef(zRotated / 10, 0, 0, 1);
-    glutSolidSphere(venusRadius * 0.7, verticalLines, horizontalLines);
-    glPopMatrix();
+	    setMaterialColor(0.0, 0.7, 0.1);
+	    glPushMatrix();
+	    	drawCircle(venusAU);
+		    glTranslatef(0.0, 0.0, venusAU);
+		    glRotatef(90.0, 1, 0, 0);
+		    glRotatef(zRotated / 10, 0, 0, 1);
+		    if (toScale == 2) { glScalef(2.0, 2.0, 2.0); }
+		    glutSolidSphere(venusRadius * 0.7, verticalLines, horizontalLines);
+	    glPopMatrix();
     glPopMatrix();
 }
+
+void drawMercury() {
+	glPushMatrix();
+	    glRotatef(earthTranslation*1.8, 0, 1, 0);
+
+	    setMaterialColor(0.0, 0.7, 0.1);
+	    glPushMatrix();
+	    	drawCircle(mercuryAU);
+		    glTranslatef(0.0, 0.0, mercuryAU);
+		    glRotatef(90.0, 1, 0, 0);
+		    glRotatef(zRotated / 10, 0, 0, 1);
+		    if (toScale == 1) glScalef(2.0, 2.0, 2.0);
+		    glutSolidSphere(mercuryRadius * 0.7, verticalLines, horizontalLines);
+	    glPopMatrix();
+    glPopMatrix();
+}
+
 
 void reshapeFunc(int x, int y) {
     glMatrixMode(GL_PROJECTION);
@@ -169,12 +191,14 @@ void Draw_Spheres(void) {
     drawEarth();
     drawMars();
     drawVenus();
+    drawMercury();
     glutSwapBuffers();
 }
 
 void idleFunc(void) {
     zRotated += earthDay;
-    earthTranslation += (earthDay / 365);
+    if (!analisysMode)
+    	earthTranslation += (earthDay / 365);
     glutPostRedisplay();
 }
 
@@ -196,6 +220,16 @@ void keyboard(int key, int x, int y) {
 
 /* Função callback chamada para gerenciar eventos de teclado */
 void GerenciaTeclado(unsigned char key, int x, int y) {
+	if (isdigit(key)) {
+        int value = key - '0';
+        cout << value << endl;
+        if (toScale == value) {
+            toScale = -1;
+        } else {
+            toScale = value;
+        }
+    }
+
     switch (key) {
     case 'f':
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -214,19 +248,6 @@ void GerenciaTeclado(unsigned char key, int x, int y) {
     case 'x':
         cameraDistance -= 1;
         break;
-    case '3':
-        toScale = 3;
-        break;
-    }
-
-
-    if (isdigit(key)) {
-        int value = (int) key;
-        if (toScale == value) {
-            toScale = -1;
-        } else {
-            toScale = value;
-        }
     }
 
     glutPostRedisplay();
@@ -244,7 +265,8 @@ void mouseButton(int button, int state, int x, int y) {
         } else {
             glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
         }
-
+    } else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+    	analisysMode = !analisysMode;
     }
 }
 
