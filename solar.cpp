@@ -1,6 +1,3 @@
-//#include "GL/freeglut.h"
-//#include 
-
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -14,27 +11,33 @@
 #endif
 #include <math.h>
 #include "globals.h"
-
-#include <typeinfo>
+#include "BitmapLoader.h"
 #include <iostream>
-// #define WindowWidth 800
-// #define WindowHeight 800
+
 using namespace std;
 
+/*
+
+	HOW TO PLAY
+
+	- Arrows move the camera, though it's fixed to the center of the sun
+	- Z and X move the camera back and forth from the center
+	- Keys 1 to 5 scale the planets by 200%. Ordered by proximity to the sun
+	- Mouse right button and keys L, P and F change poligon mode
+	- Mouse left button enter in analisys mode, halt rotation and keep its translation so the user can zoom in.
+
+
+	Sun is not scaled, though the planets are.
+*/
+void setMaterialColor(float r, float g, float b);
+
 float hOrbit = 180;
-float vOrbit = -40;
+float vOrbit = -20;
 int polyMode = 0;
 
 // -1 means no planet should scale. 
 int toScale = -1;
 bool analisysMode = false;
-
-
-
-
-
-
-GLuint LoadTexture( const char * filename, int width, int height );
 
 GLuint sunTex;
 GLuint earthTex;
@@ -45,16 +48,19 @@ GLuint venusTex;
 GLuint jupiterTex;
 
 void drawCircle(float radius) {
+	// glDisable(GL_LIGHTING);
 	glPushMatrix();
     glBegin(GL_LINE_LOOP);
-
+	// glColor4i(1, 1, 1, 1);
+    setMaterialColor(1,1,1);
     for (int i = 0; i < 360; i++) {
         float degInRad = i * deg2rad;
-        glColor4i(1, 1, 1, 1);
+        
         glVertex3f(cosf(degInRad) * radius, 0, sinf(degInRad) * radius);
     }
     glEnd();
     glPopMatrix();
+    // glEnable(GL_LIGHTING);
 }
 
 void setMaterialColor(float r, float g, float b) {
@@ -64,7 +70,7 @@ void setMaterialColor(float r, float g, float b) {
     glMaterialfv(GL_FRONT, GL_AMBIENT, color);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, color);
     glMaterialfv(GL_FRONT, GL_SPECULAR, qaWhite);
-    glMaterialf(GL_FRONT, GL_SHININESS, 100.0);
+    glMaterialf(GL_FRONT, GL_SHININESS, 200.0);
 }
 
 void drawEarthMoon() {
@@ -74,13 +80,11 @@ void drawEarthMoon() {
 
     glPushMatrix();
 	    glRotatef(earthTranslation * 8, 0, 1, 0);
-	    // setMaterialColor(1, 1, 1);
 	    glPushMatrix();
 		    drawCircle(earthRadius + (earthRadius * 0.27) * 2);
 		    glTranslatef(0.0, 0.0, earthRadius + (earthRadius * 0.27) * 2);
-
 		    glRotatef(90.0, 1, 0, 0);
-		    //glutSolidSphere(earthRadius * 0.27, verticalLines, horizontalLines);
+		    glRotatef(-zRotated / 50, 0, 0, 1);
 		    glEnable ( GL_TEXTURE_2D );
 		    glBindTexture ( GL_TEXTURE_2D, moonTex);
 		    gluSphere(sphere, earthRadius * 0.27, verticalLines, horizontalLines);
@@ -102,10 +106,10 @@ void drawEarth() {
 
 	    drawEarthMoon();
 
-	    if (toScale == 3) { glScalef(2.0, 2.0, 2.0); }
+	    if (toScale == 3) glScalef(2.0, 2.0, 2.0);
 
-	    // Axial tilt of 23.44 -> 90-23.44
-	    glRotatef(66.56, 1, 0, 0);
+	    // Axial tilt of 23.44 -> -90+23.44
+	    glRotatef(-66.56, 1, 0, 0);
 
 	    //Translation around self axis
 	    glRotatef(zRotated / 50, 0, 0, 1);
@@ -152,12 +156,11 @@ void drawMars() {
 	    	drawCircle(marsAU);
 		    glTranslatef(0.0, 0.0, marsAU);
 
-		    // Axial tilt of 25.19 -> 90-25.19
-		    glRotatef(64.81, 1, 0, 0);
+		    // Axial tilt of 25.19 -> -90+25.19
+		    glRotatef(-64.81, 1, 0, 0);
 
 		    glRotatef(zRotated / 10, 0, 0, 1);
-		    if (toScale == 4) { glScalef(2.0, 2.0, 2.0); }
-		    // glutSolidSphere(earthRadius * 0.7, verticalLines, horizontalLines);
+		    if (toScale == 4) glScalef(2.0, 2.0, 2.0); 
 
 		    glEnable ( GL_TEXTURE_2D );
 		    glBindTexture ( GL_TEXTURE_2D, marsTex);
@@ -175,15 +178,12 @@ void drawVenus() {
 
     glPushMatrix();
 	    glRotatef(earthTranslation * 0.7, 0, 1, 0);
-
-	    // setMaterialColor(0.0, 0.7, 0.1);
 	    glPushMatrix();
 	    	drawCircle(venusAU);
 		    glTranslatef(0.0, 0.0, venusAU);
 		    glRotatef(90.0, 1, 0, 0);
 		    glRotatef(zRotated / 10, 0, 0, 1);
-		    if (toScale == 2) { glScalef(2.0, 2.0, 2.0); }
-
+		    if (toScale == 2)  glScalef(2.0, 2.0, 2.0); 
 		    glEnable ( GL_TEXTURE_2D );
 		    glBindTexture ( GL_TEXTURE_2D, venusTex);
 		    gluSphere(sphere, venusRadius, verticalLines, horizontalLines);
@@ -199,8 +199,6 @@ void drawMercury() {
 
 	glPushMatrix();
 	    glRotatef(earthTranslation*1.8, 0, 1, 0);
-
-	    // setMaterialColor(0.0, 0.7, 0.1);
 	    glPushMatrix();
 	    	drawCircle(mercuryAU);
 		    glTranslatef(0.0, 0.0, mercuryAU);
@@ -229,7 +227,7 @@ void drawJupiter() {
 		    glTranslatef(0.0, 0.0, jupiterAU);
 		    glRotatef(90.0, 1, 0, 0);
 		    glRotatef(zRotated / 10, 0, 0, 1);
-		    if (toScale == 1) glScalef(2.0, 2.0, 2.0);
+		    if (toScale == 5) glScalef(2.0, 2.0, 2.0);
 		    glEnable ( GL_TEXTURE_2D );
 		    glBindTexture ( GL_TEXTURE_2D, jupiterTex);
 		    gluSphere(sphere, jupiterRadius, verticalLines, horizontalLines);
@@ -238,8 +236,6 @@ void drawJupiter() {
     glPopMatrix();
 }
 
-
-
 void reshapeFunc(int x, int y) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -247,10 +243,6 @@ void reshapeFunc(int x, int y) {
     gluPerspective(40.0, (GLdouble) x / (GLdouble) y, 0.5, 280.0);
     glMatrixMode(GL_MODELVIEW);
     glViewport(0, 0, x, y);
-
-    // disable see through
-    glEnable(GL_DEPTH_TEST);
-
 }
 
 void draw(void) {
@@ -276,7 +268,6 @@ void draw(void) {
     drawMars();
     drawJupiter();
     
-    
     glutSwapBuffers();
 }
 
@@ -299,6 +290,8 @@ void keyboard(int key, int x, int y) {
     } else if (key == GLUT_KEY_DOWN) {
         vOrbit -= 10;
     }
+
+    cout << "H: " << hOrbit << " - V: " << vOrbit << endl;
     // Request display update
     glutPostRedisplay();
 }
@@ -326,10 +319,10 @@ void keyboardManager(unsigned char key, int x, int y) {
 
 	// Camera distance
     case 'z':
-        cameraDistance += 1;
+        cameraDistance += 4;
         break;
     case 'x':
-        cameraDistance -= 1;
+        cameraDistance -= 4;
         break;
     }
 
@@ -359,8 +352,8 @@ void init() {
     glEnable(GL_LIGHT0);
 
     // Set lighting intensity and color
-    GLfloat qaAmbientLight[] = { 0.4, 0.4, 0.4, 1.0 };
-    GLfloat qaDiffuseLight[] = { 1, 1, 1, 1 };
+    GLfloat qaAmbientLight[] = {0.8, 0.8, 0.8, 1.0};
+    GLfloat qaDiffuseLight[] = { 5, 5, 5, 1 };
     GLfloat qaSpecularLight[]	= {0.8, 0.8, 0.8, 1.0};
     glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
@@ -370,11 +363,12 @@ void init() {
     GLfloat qaLightPosition[] = { 0, 0, 0, 1 };
 
     glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition);
+
     glEnable(GL_DEPTH_TEST);
 }
 
 void loadAllTextures() {
-	sunTex = LoadTexture( "Bitmaps/sunmap.bmp", 1024, 512 );
+	sunTex = LoadTexture( "Bitmaps/sun.bmp", 2048, 1024 );
 	earthTex = LoadTexture( "Bitmaps/earthmap.bmp", 1000, 500 );
 	marsTex = LoadTexture( "Bitmaps/marsmap.bmp", 1024, 512 );
 
@@ -407,44 +401,3 @@ int main(int argc, char * * argv) {
     return 0;
 }
 
-GLuint LoadTexture( const char * filename, int width, int height ) {
-
-  GLuint texture;
-
-  // int width, height;
-
-  unsigned char * data;
-
-  FILE * file;
-
-  file = fopen( filename, "rb" );
-
-  if ( file == NULL ) return 0;
-  data = (unsigned char *)malloc( width * height * 3 );
-  //int size = fseek(file,);
-  fread( data, width * height * 3, 1, file );
-  fclose( file );
-
-	for(int i = 0; i < width * height ; ++i) {
-	   int index = i*3;
-	   unsigned char B,R;
-	   B = data[index];
-	   R = data[index+2];
-
-	   data[index] = R;
-	   data[index+2] = B;
-	}
-	glGenTextures( 1, &texture );
-	glBindTexture( GL_TEXTURE_2D, texture );
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST );
-
-
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_REPEAT );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_REPEAT );
-	gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height,GL_RGB, GL_UNSIGNED_BYTE, data );
-	free( data );
-
-	return texture;
-}

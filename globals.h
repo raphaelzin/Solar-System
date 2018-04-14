@@ -2,7 +2,7 @@
 const GLfloat PI = 3.1415926535;
 const float deg2rad = PI/180;
 
-float cameraDistance = 22; 
+float cameraDistance = 48; 
 
 
 float definition = 1;
