@@ -11,11 +11,11 @@ float horizontalLines = 50*definition;
  
 float xRotated = 90.0, yRotated = 0.0, zRotated = 0.0;
 float earthTranslation = 0.0;
-float earthDay = 70;
+float earthDay = 140;
 
 // Radius
 float earthRadius = 0.5;
-float sunRadius = earthRadius*5;
+float sunRadius = earthRadius*10;
 float marsRadius = earthRadius*0.5;
 float venusRadius = earthRadius*0.95;
 float jupiterRadius = earthRadius*11.2;
