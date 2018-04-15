@@ -4,7 +4,6 @@ const float deg2rad = PI/180;
 
 float cameraDistance = 48; 
 
-
 float definition = 1;
 float verticalLines = 20*definition;
 float horizontalLines = 50*definition;
@@ -34,4 +33,3 @@ float jupiterAU = au*5.2 + jupiterRadius;
 float saturnAU = au*9.54 + saturnRadius;
 float uranusAU = au*19.2 + uranusRadius;
 float neptuneAU = au*30.1 + neptuneRadius;
-// float plutoAU = au*39.4;
