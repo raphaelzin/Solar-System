@@ -83,16 +83,14 @@ void drawEarthMoon() {
 
     glPushMatrix();
 	    glRotatef(earthTranslation * 8, 0, 1, 0);
-	    glPushMatrix();
-		    drawCircle(earthRadius + (earthRadius * 0.27) * 2);
-		    glTranslatef(0.0, 0.0, earthRadius + (earthRadius * 0.27) * 2);
-		    glRotatef(90.0, 1, 0, 0);
-		    glRotatef(-zRotated / 50, 0, 0, 1);
-		    glEnable ( GL_TEXTURE_2D );
-		    glBindTexture ( GL_TEXTURE_2D, moonTex);
-		    gluSphere(sphere, earthRadius * 0.27, verticalLines, horizontalLines);
-		    glDisable ( GL_TEXTURE_2D );
-	    glPopMatrix();
+	    drawCircle(earthRadius + (earthRadius * 0.27) * 2);
+	    glTranslatef(0.0, 0.0, earthRadius + (earthRadius * 0.27) * 2);
+	    glRotatef(90.0, 1, 0, 0);
+	    glRotatef(-zRotated / 50, 0, 0, 1);
+	    glEnable ( GL_TEXTURE_2D );
+	    glBindTexture ( GL_TEXTURE_2D, moonTex);
+	    gluSphere(sphere, earthRadius * 0.27, verticalLines, horizontalLines);
+	    glDisable ( GL_TEXTURE_2D );
     glPopMatrix();
 }
 
@@ -106,33 +104,31 @@ void drawEarth() {
 	    //Rotation around the sun
 	    glRotatef(earthTranslation, 0, 1, 0);
 
-	    glPushMatrix(); // inner push
-	    	// Draws the planet's orbit
-		    drawCircle(au);
+    	// Draws the planet's orbit
+	    drawCircle(au);
 
-		    // Translate planet to it's distance from the sun (in Astronomic Units)
-		    glTranslatef(0.0, 0.0, au);
+	    // Translate planet to it's distance from the sun (in Astronomic Units)
+	    glTranslatef(0.0, 0.0, au);
 
-		    // Draw earth's moon
-		    drawEarthMoon();
+	    // Draw earth's moon
+	    drawEarthMoon();
 
-		    // If the planet selected is 3, double its scale
-		    if (toScale == 3) glScalef(2.0, 2.0, 2.0);
+	    // If the planet selected is 3, double its scale
+	    if (toScale == 3) glScalef(2.0, 2.0, 2.0);
 
-		    // Axial tilt of 23.44 -> -90+23.44
-		    glRotatef(-66.56, 1, 0, 0);
+	    // Axial tilt of 23.44 -> -90+23.44
+	    glRotatef(-66.56, 1, 0, 0);
 
-		    //Translation around self axis
-		    glRotatef(zRotated / 50, 0, 0, 1);
-	 		
-	 		glEnable ( GL_TEXTURE_2D );
-	 		//Apply texture to next drawn object
-		    glBindTexture ( GL_TEXTURE_2D, earthTex);
+	    //Translation around self axis
+	    glRotatef(zRotated / 50, 0, 0, 1);
+ 		
+ 		glEnable ( GL_TEXTURE_2D );
+ 		//Apply texture to next drawn object
+	    glBindTexture ( GL_TEXTURE_2D, earthTex);
 
-		    // Create the sphere, set its radius, slices and stacks
-		    gluSphere(sphere, earthRadius, verticalLines, horizontalLines);
-		    glDisable ( GL_TEXTURE_2D );
-	    glPopMatrix();
+	    // Create the sphere, set its radius, slices and stacks
+	    gluSphere(sphere, earthRadius, verticalLines, horizontalLines);
+	    glDisable ( GL_TEXTURE_2D );
     glPopMatrix();
 }
 
@@ -161,24 +157,21 @@ void drawMars() {
 
     glPushMatrix();
 	    glRotatef(earthTranslation * 1.3, 0, 1, 0);
-	    // setMaterialColor(0.8, 0.2, 0.1);
 
-	    glPushMatrix();
-	    	drawCircle(marsAU);
-		    glTranslatef(0.0, 0.0, marsAU);
+    	drawCircle(marsAU);
+	    glTranslatef(0.0, 0.0, marsAU);
 
-		    // Axial tilt of 25.19 -> -90+25.19
-		    glRotatef(-64.81, 1, 0, 0);
+	    // Axial tilt of 25.19 -> -90+25.19
+	    glRotatef(-64.81, 1, 0, 0);
 
-		    glRotatef(zRotated / 10, 0, 0, 1);
-		    if (toScale == 4) glScalef(2.0, 2.0, 2.0); 
+	    glRotatef(zRotated / 10, 0, 0, 1);
+	    if (toScale == 4) glScalef(2.0, 2.0, 2.0); 
 
-		    glEnable ( GL_TEXTURE_2D );
-		    glBindTexture ( GL_TEXTURE_2D, marsTex);
-		    gluSphere(sphere, marsRadius, verticalLines, horizontalLines);
-		    glDisable ( GL_TEXTURE_2D );
+	    glEnable ( GL_TEXTURE_2D );
+	    glBindTexture ( GL_TEXTURE_2D, marsTex);
+	    gluSphere(sphere, marsRadius, verticalLines, horizontalLines);
+	    glDisable ( GL_TEXTURE_2D );
 
-	    glPopMatrix();
     glPopMatrix();
 }
 
@@ -189,17 +182,15 @@ void drawVenus() {
 
     glPushMatrix();
 	    glRotatef(earthTranslation * 0.7, 0, 1, 0);
-	    glPushMatrix();
-	    	drawCircle(venusAU);
-		    glTranslatef(0.0, 0.0, venusAU);
-		    glRotatef(90.0, 1, 0, 0);
-		    glRotatef(zRotated / 10, 0, 0, 1);
-		    if (toScale == 2)  glScalef(2.0, 2.0, 2.0); 
-		    glEnable ( GL_TEXTURE_2D );
-		    glBindTexture ( GL_TEXTURE_2D, venusTex);
-		    gluSphere(sphere, venusRadius, verticalLines, horizontalLines);
-		    glDisable ( GL_TEXTURE_2D );
-	    glPopMatrix();
+    	drawCircle(venusAU);
+	    glTranslatef(0.0, 0.0, venusAU);
+	    glRotatef(90.0, 1, 0, 0);
+	    glRotatef(zRotated / 10, 0, 0, 1);
+	    if (toScale == 2)  glScalef(2.0, 2.0, 2.0); 
+	    glEnable ( GL_TEXTURE_2D );
+	    glBindTexture ( GL_TEXTURE_2D, venusTex);
+	    gluSphere(sphere, venusRadius, verticalLines, horizontalLines);
+	    glDisable ( GL_TEXTURE_2D );
     glPopMatrix();
 }
 
@@ -210,17 +201,15 @@ void drawMercury() {
 
 	glPushMatrix();
 	    glRotatef(earthTranslation*1.8, 0, 1, 0);
-	    glPushMatrix();
-	    	drawCircle(mercuryAU);
-		    glTranslatef(0.0, 0.0, mercuryAU);
-		    glRotatef(90.0, 1, 0, 0);
-		    glRotatef(zRotated / 10, 0, 0, 1);
-		    if (toScale == 1) glScalef(2.0, 2.0, 2.0);
-		    glEnable ( GL_TEXTURE_2D );
-		    glBindTexture ( GL_TEXTURE_2D, mercuryTex);
-		    gluSphere(sphere, mercuryRadius, verticalLines, horizontalLines);
-		    glDisable ( GL_TEXTURE_2D );
-	    glPopMatrix();
+    	drawCircle(mercuryAU);
+	    glTranslatef(0.0, 0.0, mercuryAU);
+	    glRotatef(90.0, 1, 0, 0);
+	    glRotatef(zRotated / 10, 0, 0, 1);
+	    if (toScale == 1) glScalef(2.0, 2.0, 2.0);
+	    glEnable ( GL_TEXTURE_2D );
+	    glBindTexture ( GL_TEXTURE_2D, mercuryTex);
+	    gluSphere(sphere, mercuryRadius, verticalLines, horizontalLines);
+	    glDisable ( GL_TEXTURE_2D );
     glPopMatrix();
 }
 
@@ -232,18 +221,15 @@ void drawJupiter() {
 	glPushMatrix();
 	    glRotatef(earthTranslation*3, 0, 1, 0);
 
-	    // setMaterialColor(0.0, 0.7, 0.1);
-	    glPushMatrix();
-	    	drawCircle(jupiterAU);
-		    glTranslatef(0.0, 0.0, jupiterAU);
-		    glRotatef(90.0, 1, 0, 0);
-		    glRotatef(zRotated / 10, 0, 0, 1);
-		    if (toScale == 5) glScalef(2.0, 2.0, 2.0);
-		    glEnable ( GL_TEXTURE_2D );
-		    glBindTexture ( GL_TEXTURE_2D, jupiterTex);
-		    gluSphere(sphere, jupiterRadius, verticalLines, horizontalLines);
-		    glDisable ( GL_TEXTURE_2D );
-	    glPopMatrix();
+		drawCircle(jupiterAU);
+	    glTranslatef(0.0, 0.0, jupiterAU);
+	    glRotatef(90.0, 1, 0, 0);
+	    glRotatef(zRotated / 10, 0, 0, 1);
+	    if (toScale == 5) glScalef(2.0, 2.0, 2.0);
+	    glEnable ( GL_TEXTURE_2D );
+	    glBindTexture ( GL_TEXTURE_2D, jupiterTex);
+	    gluSphere(sphere, jupiterRadius, verticalLines, horizontalLines);
+	    glDisable ( GL_TEXTURE_2D );
     glPopMatrix();
 }
 
