@@ -258,9 +258,9 @@ void stars() {
 }
 
 
-// When window is reshaped, update perspective and viewport
-void reshapeFunc(int x, int y) {
-    // Enter projection matrix mode to alter perspective
+// set and update perspective and viewport
+void init(int x, int y) {
+    // Enter projection matrix mode to set perspective
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(40.0, (GLdouble) x / (GLdouble) y, 0.5, (cameraDistance+10)*2);
@@ -278,6 +278,7 @@ void draw(void) {
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+
     glLoadIdentity();
 
     // Specify camera position
@@ -354,11 +355,11 @@ void keyboardManager(unsigned char key, int x, int y) {
 	// Camera distance
     case 'z':
         cameraDistance += 4;
-        reshapeFunc(windowWidth, windowHeight);
+        init(windowWidth, windowHeight);
         break;
     case 'x':
         cameraDistance -= 4;
-        reshapeFunc(windowWidth, windowHeight);
+        init(windowWidth, windowHeight);
         break;
     }
 
@@ -383,7 +384,7 @@ void mouseButton(int button, int state, int x, int y) {
     }
 }
 
-void init() {
+void setupLighting() {
     // enable light
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glEnable(GL_LIGHTING);
@@ -391,7 +392,7 @@ void init() {
 
     // Set lighting intensity and color
     GLfloat qaAmbientLight[] = {0.8, 0.8, 0.8, 1.0};
-    GLfloat qaDiffuseLight[] = { 9, 9, 9, 1 };
+    GLfloat qaDiffuseLight[] = { 0.2, 0.2, 0.2, 1 };
     GLfloat qaSpecularLight[]	= {0.8, 0.8, 0.8, 1.0};
     glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
@@ -421,19 +422,22 @@ int main(int argc, char * * argv) {
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(windowWidth, windowHeight);
+
+
     glutInitWindowPosition(0, 0);
     glutCreateWindow("You Spin me right round, baby right round");
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glutMouseFunc(mouseButton);
-    init();
+    
     glutSpecialFunc(keyboard);
     glutKeyboardFunc(keyboardManager);
     glutDisplayFunc(draw);
-    glutReshapeFunc(reshapeFunc);
+    glutReshapeFunc(init);
     glutIdleFunc(idleFunc);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     loadAllTextures();
+    setupLighting();
     glutMainLoop();
 
     return 0;
