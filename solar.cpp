@@ -406,7 +406,7 @@ void setupLighting() {
 
 // Load all textures
 void loadAllTextures() {
-	sunTex = LoadTexture( "Bitmaps/sun.bmp", 2048, 1024 );
+	sunTex = LoadTexture("Bitmaps/sun.bmp", 2048, 1024);
 	earthTex = LoadTexture( "Bitmaps/earthmap.bmp", 1000, 500 );
 	marsTex = LoadTexture( "Bitmaps/marsmap.bmp", 1024, 512 );
 
